@@ -1,1 +1,2 @@
 1. Create command to list completed jobs and steps
+2. Make projectIds sortable by time
