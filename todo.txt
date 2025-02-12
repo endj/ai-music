@@ -1,3 +1,1 @@
-1. Figure out how to run demucs on GPU and how to configure torch for cuda ( whatever that is ) ( on m1 maybe )
-2. Figure out how to transform vocals
-3. Figure out how to join instrumental with transformed vocals
+1. Create command to list completed jobs and steps
