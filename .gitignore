@@ -1,0 +1,11 @@
+.idea/**
+.DS_STORE
+/projects/**
+src/__pycache__/
+venv/
+ai-venv/
+.env/
+.venv/
+env/
+ENV/
+pip-log.txt
