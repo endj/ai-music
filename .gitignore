@@ -10,3 +10,4 @@ ai-venv/
 env/
 ENV/
 pip-log.txt
+db/music.db

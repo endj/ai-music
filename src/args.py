@@ -23,7 +23,7 @@ class RegisterModel:
 
 @dataclass(frozen=True)
 class ListModels:
-    pass  # No extra arguments needed
+    pass
 
 
 def validate_voice(voice: str):
@@ -43,7 +43,6 @@ def parse_models(models_csv: str) -> List[str]:
 
 
 def validate_pth_file(path: str):
-    """Ensure the file exists and has a .pth extension."""
     if not os.path.isfile(path):
         raise argparse.ArgumentTypeError(f"File does not exist: {path}")
     if not path.endswith(".pth"):
@@ -73,7 +72,6 @@ def parse_args() -> Union[ProcessJob, RegisterModel, ListModels]:
 
     args = parser.parse_args()
 
-    # Return the correct dataclass based on the command
     if args.command == "process":
         validate_youtube_url(args.url)
         models = parse_models(args.models)

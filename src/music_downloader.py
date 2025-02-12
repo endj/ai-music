@@ -8,12 +8,12 @@ def download_audio(url: str, output_folder: str):
         'outtmpl': f'{output_folder}/original.%(ext)s',  # Output filename format
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',  # Convert audio to a specific format
-            'preferredcodec': 'wav',  # Change this to 'wav', 'opus', etc. if needed
+            'preferredcodec': 'mp3',  # Change this to 'wav', 'opus', etc. if needed
             'preferredquality': '192',  # Adjust bitrate
         }],
         'quiet': False,  # Set to True to suppress output
     }
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         ydl.download([url])
-    log.info(f"Downloaded {url} to {output_folder}/original.wav")
-    return f"{output_folder}/original.wav"
+    log.info(f"Downloaded {url} to {output_folder}/original.mp3")
+    return f"{output_folder}/original.mp3"

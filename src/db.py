@@ -90,18 +90,18 @@ def save_error(project_id: str, error: Exception):
             WHERE project_id = ?
         """, ("FAILED", timestamp, project_id))
 
-def update_status(project_id: str, msg: str):
+def update_status(project_id: str, msg: str, status: str):
     timestamp = unix_millis()
     with db_connection() as cursor:
         cursor.execute("""
            INSERT INTO project_events (project_id, status, info, created_at)
            VALUES (?, ?, ?, ?)
-        """, (project_id, "DOWNLOADED_MUSIC", msg, timestamp))
+        """, (project_id, status, msg, timestamp))
         cursor.execute("""
             UPDATE projects
             SET status = ?, updated_at = ?
             WHERE project_id = ?
-        """, ("DOWNLOADED_MUSIC", timestamp, project_id))
+        """, (status, timestamp, project_id))
 
 def list_jobs() -> List[DBJob]:
     """Retrieve all jobs from the database and return them as a list of Job dataclass instances."""

@@ -75,8 +75,8 @@ def register_model(model: RegisterModel):
 
 def list_available_models():
     models = _meta()
-    model_names = "- \n".join([m.name for m in models.values()])
-    log.info(f"Available models: {model_names}")
+    model_names = "\n".join(["- " + m.name for m in models.values()])
+    log.info(f"Available models:\n{model_names}")
 
 def has_models(models: List[str]) -> ModelQuery:
     stored_models = _meta()
