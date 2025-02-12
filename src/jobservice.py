@@ -1,20 +1,20 @@
-from args import Job
-import project, db, logging, musicdownloader, vocalSplitter, vocaltransformer
+from args import ProcessJob
+import project, db, logging, music_downloader, vocal_splitter, vocal_transformer
 
 log = logging.getLogger(__name__)
 
-def schedule_job(job: Job):
+def schedule_job(job: ProcessJob):
     try:
         db.insert_job(job)
-        folder_path = project.create_folder(job)
+        project_folder_path = project.create_folder(job)
 
-        output_file = musicdownloader.download_audio(job.url, folder_path, job.project_id)
+        downloaded_song_path = musicdownloader.download_audio(job.url, project_folder_path)
         db.update_status(job.project_id, "Raw Song Downloaded")
 
-        (vocals_path, other) = vocalSplitter.split_raw_audio(output_file, folder_path)
+        vocals_path, instrumentals_path = vocalSplitter.split_raw_audio(downloaded_song_path, project_folder_path)
         db.update_status(job.project_id, "Split vocals from instrumental")
-        log.info(f"Split vocals into {vocals_path} and {other}")
 
+        vocaltransformer.transform_vocals(vocals_path, instrumentals_path, project_folder_path, job.models)
         #transformed_path = vocaltransformer.transform_vocals(vocals_path, folder_path, job.voice)
 
 

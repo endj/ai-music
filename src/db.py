@@ -5,7 +5,7 @@ import time
 from contextlib import contextmanager
 from dataclasses import dataclass
 from typing import List
-from args import Job
+from args import ProcessJob
 
 log = logging.getLogger(__name__)
 
@@ -14,7 +14,7 @@ log = logging.getLogger(__name__)
 class DBJob:
     project_id: str
     url: str
-    voice: str
+    models: str
     status: str
     created_at: int
     updated_at: int
@@ -49,23 +49,23 @@ def migrate_db():
         sys.exit(1)
 
 
-def insert_job(job: Job):
+def insert_job(job: ProcessJob):
     project_id = job.project_id
     url = job.url
-    voice = job.voice
+    models = ",".join(job.models)
     status = "CREATED"
     created_at = unix_millis()
     updated_at = 0
 
     log.info(
-        f"Inserting job (project_id: {project_id}, url: {url}, voice: {voice}, status: {status}, created_at: {created_at}, updated_at: {updated_at})")
+        f"Inserting job (project_id: {project_id}, url: {url}, models: {models}, status: {status}, created_at: {created_at}, updated_at: {updated_at})")
 
     try:
         with db_connection() as cursor:
             cursor.execute("""
-                INSERT INTO projects (project_id, url, voice, status, created_at, updated_at)
+                INSERT INTO projects (project_id, url, models, status, created_at, updated_at)
                 VALUES (?, ?, ?, ?, ?, ?)
-            """, (project_id, url, voice, status, created_at, updated_at))
+            """, (project_id, url, models, status, created_at, updated_at))
 
     except sqlite3.IntegrityError as e:
         log.error(f"Failed to insert job {job} error: {e}")
@@ -107,11 +107,11 @@ def list_jobs() -> List[DBJob]:
     """Retrieve all jobs from the database and return them as a list of Job dataclass instances."""
     try:
         with db_connection() as cursor:
-            cursor.execute("SELECT project_id, url, voice, status, created_at, updated_at FROM projects")
+            cursor.execute("SELECT project_id, url, models, status, created_at, updated_at FROM projects")
             rows = cursor.fetchall()
 
             # Convert rows into a list of Job dataclass instances
-            jobs = [DBJob(project_id=row[0], url=row[1], voice=row[2], status=row[3],
+            jobs = [DBJob(project_id=row[0], url=row[1], models=row[2], status=row[3],
                         created_at=row[4], updated_at=row[5]) for row in rows]
 
         return jobs

@@ -1,6 +1,7 @@
 .idea/**
 .DS_STORE
 /projects/**
+/models/**
 src/__pycache__/
 venv/
 ai-venv/
