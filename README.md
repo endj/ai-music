@@ -1,5 +1,11 @@
 # AI Music CLI
 
+## Install
+
+* Python 3.10 =<
+* FFMPEG
+* pip install -r requirements.txt
+
 ## Overview
 CLI is for generating AI song voice-overs.
 ## Commands

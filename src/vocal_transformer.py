@@ -14,10 +14,10 @@ class TransformationResult:
     model_folder_path: str
     model_name: str
 
-def run_rvc_cli(vocal_file_path: Path, output_file: Path, model_path: Path):
+def _run_rvc_cli(vocal_file_path: Path, output_file: Path, model_path: Path):
 
     command = [
-        "python",
+        "python3.10",
         "-m",
         "rvc_python",
         "cli",
@@ -33,7 +33,7 @@ def run_rvc_cli(vocal_file_path: Path, output_file: Path, model_path: Path):
 
     try:
         result = subprocess.run(
-            command, capture_output=False, text=True, check=True, env=env, cwd=None, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            command, capture_output=True, text=True, check=True, env=env, cwd=None
         )
         return result.returncode # Return the exit code for checking success/failure
     except subprocess.CalledProcessError as e:
@@ -47,24 +47,21 @@ def run_rvc_cli(vocal_file_path: Path, output_file: Path, model_path: Path):
         raise e
 
 
-def transform_vocals(vocals_path: str, instrumental_path: str, project_folder_path: str, models: List[str]) -> List[TransformationResult]:
+def transform_vocals(vocals_path: str, output_folder_path: str, models: List[str]) -> List[TransformationResult]:
     vocals_path_obj = Path(vocals_path)
-    instrumental_path_obj = Path(instrumental_path)
-    output_path_obj = Path(project_folder_path)
+    output_path_obj = Path(output_folder_path)
 
     if not vocals_path_obj.is_file():
         raise FileNotFoundError(f"Error: The file '{vocals_path}' does not exist.")
-    if not instrumental_path_obj.is_file():
-        raise FileNotFoundError(f"Error: The file '{instrumental_path}' does not exist.")
     if not output_path_obj.is_dir():
-        raise NotADirectoryError(f"Error: The directory '{project_folder_path}' does not exist.")
+        raise NotADirectoryError(f"Error: The directory '{output_folder_path}' does not exist.")
 
     model_output = output_path_obj / "models"
     model_output.mkdir(parents=True, exist_ok=True)
 
     results = []
 
-    log.info(f"Transforming:\n Vocals: {vocals_path}\n instrumental: {instrumental_path}\n output: {project_folder_path}\n models: {str(models)}")
+    log.info(f"Transforming:\n Vocals: {vocals_path}\n output: {output_folder_path}\n models: {str(models)}")
     for model_name in models:
         model_meta = model_service.get_model(model_name)
         model_path = Path(model_meta.model_path)
@@ -78,7 +75,7 @@ def transform_vocals(vocals_path: str, instrumental_path: str, project_folder_pa
 
         print("Transforming using model",model_name)
         start_time = time.time()
-        run_rvc_cli(vocals_path_obj, model_output_path, model_path)
+        _run_rvc_cli(vocals_path_obj, model_output_path, model_path)
         end_time = time.time()
         print("Finished transforming in", end_time - start_time)
         results.append(TransformationResult(

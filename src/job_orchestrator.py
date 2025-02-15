@@ -14,7 +14,7 @@ def schedule_job(job: ProcessJob):
         vocals_path, instrumentals_path = vocal_splitter.split_raw_audio(downloaded_song_path, project_folder_path)
         db.update_status(job.project_id, "Split vocals from instrumental", "SPLIT_VOCALS")
 
-        transformed = vocal_transformer.transform_vocals(vocals_path, instrumentals_path, project_folder_path, job.models)
+        transformed = vocal_transformer.transform_vocals(vocals_path, project_folder_path, job.models)
         db.update_status(job.project_id, "Transformed Models", "TRANSFORMED_MODELS")
 
         sound_mixer.combine(transformed, instrumentals_path)

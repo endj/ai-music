@@ -8,7 +8,7 @@ from vocal_transformer import TransformationResult
 log = logging.getLogger(__name__)
 
 
-def _mix_mp3s(transformed_vocal: Path, instrumental: Path, output_file: Path):
+def mix_mp3s(transformed_vocal: Path, instrumental: Path, output_file: Path):
     validate_file(transformed_vocal)
     validate_file(instrumental)
     command = [
@@ -50,5 +50,5 @@ def combine(transformed: List[TransformationResult], instrumental_path: str):
         log.info(f"Writing to {str(mixed_output_path)}")
 
         transformed_vocal = validate_file(Path(transformation.model_output_path))
-        _mix_mp3s(transformed_vocal, instrumental_path_obj, mixed_output_path)
+        mix_mp3s(transformed_vocal, instrumental_path_obj, mixed_output_path)
         log.info(f"Created {str(mixed_output_path)}")
